@@ -12,7 +12,7 @@ export const currentpwdstatus = (userId, data) =>
   axios.post(`/api/user/currentpwdstatus/${userId}`, data);
 export const addProduct = (userId, data) =>
   axios.post(`/api/product/addproduct/${userId}`, data);
-export const getProducts = () => api.get("/api/product/getproducts");
+export const getProducts = () => axios.get("/api/product/getproducts");
 export const singleProduct = (productId) =>
   axios.get(`/api/product/singleproduct/${productId}`);
 export const similarProductsFromServer = (queryParams) =>
