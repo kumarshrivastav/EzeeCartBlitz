@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+    min-height: 100vh;
+    margin: 0px;
+    padding: 0px;
+    background: #34495E;
+}
+
+.Cart .Cart-Item:last-child span:last-child{
+    font-weight: bold;
+}  
