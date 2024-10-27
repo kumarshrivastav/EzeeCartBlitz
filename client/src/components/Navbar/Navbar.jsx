@@ -5,37 +5,61 @@ import {
   TextInput,
   Select,
   Badge,
+  Button,
 } from "flowbite-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { IoIosSearch } from "react-icons/io";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
 import { useState } from "react";
-import { setSearchTerm, setSelectedCategory } from "../../redux/productSlice";
-import { logoutuser } from "../../http/networkRequest";
+import {
+  allProductsFromDB,
+  setSearchTerm,
+  setSelectedCategory,
+} from "../../redux/productSlice";
+import {
+  logoutuser,
+  productOnSearchTerm,
+  productOnSelect,
+} from "../../http/networkRequest";
 import {
   userLoginFailure,
   userLogoutStart,
   userLogoutSuccess,
 } from "../../redux/userSlice";
 const Header = ({ title }) => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { categories, productsFromSearch } = useSelector(
     (state) => state.products
   );
   const { user } = useSelector((state) => state.users);
   const [searchProduct, setSearchProduct] = useState("");
-  // console.log(categories)
-  // console.log(searchProduct)
-  // console.log(user)
   const dispatch = useDispatch();
-  const handleSearchChange = (e) => {
-    setSearchProduct(e.target.value);
-    dispatch(setSearchTerm(e.target.value));
+  const handleSearchChange = async (e) => {
+    try {
+      setSearchProduct(e.target.value);
+      dispatch(setSearchTerm(e.target.value));
+      const urlParams = new URLSearchParams(location.search);
+      urlParams.append("searchTerm", e.target.value);
+      const searchQuery = urlParams.toString();
+      const { data } = await productOnSearchTerm(searchQuery);
+      dispatch(allProductsFromDB(data));
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+      console.log(error);
+    }
   };
-  const handleSelectChange = (e) => {
-    // console.log(e.target.value)
-    dispatch(setSelectedCategory(e.target.value));
+  const handleSelectChange = async (e) => {
+    try {
+      const urlParams = new URLSearchParams(location.search);
+      urlParams.append("categorySelector", e.target.value);
+      const searchQuery = urlParams.toString();
+      const { data } = await productOnSelect(searchQuery);
+      dispatch(allProductsFromDB(data));
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
   };
   const handleLogout = async () => {
     try {
@@ -92,62 +116,73 @@ const Header = ({ title }) => {
           ))}
         </Select>
       </div>
-      <div className="mx-1 gap-1 flex md:order-2">
-        <Dropdown
-          arrowIcon={false}
-          inline
-          label={
-            <Avatar
-              alt={user?.firstName + " image"}
-              img={user?.avatar}
-              rounded
-            />
-          }
-        >
-          <Dropdown.Header>
-            <div className="flex flex-row justify-between">
-              <span className="block text-sm font-serif">
-                {user?.firstName} {user?.lastName}
-              </span>
-              {user?.isAdmin ? (
-                <Badge className="font-serif">Admin</Badge>
-              ) : (
-                <Badge className="font-serif">User</Badge>
-              )}
-            </div>
-            <span className="block truncate text-sm font-medium font-serif">
-              {user?.email}
-            </span>
-          </Dropdown.Header>
-          <Dropdown.Item
-            onClick={() => navigate(`/profile/${user?._id}`)}
-            className="font-serif"
+      {user && user.email ? (
+        <div className="mx-1 gap-1 flex md:order-2">
+          <Dropdown
+            arrowIcon={false}
+            inline
+            label={
+              <Avatar
+                alt={user?.firstName + " image"}
+                img={user?.avatar}
+                rounded
+              />
+            }
           >
-            Profile
-          </Dropdown.Item>
-          <Dropdown.Item className="font-serif">Settings</Dropdown.Item>
-          <Dropdown.Item className="font-serif">Earnings</Dropdown.Item>
-          {user?.isAdmin && (
+            <Dropdown.Header>
+              <div className="flex flex-row justify-between">
+                <span className="block text-sm font-serif">
+                  {user?.firstName} {user?.lastName}
+                </span>
+                {user?.isAdmin ? (
+                  <Badge className="font-serif">Admin</Badge>
+                ) : (
+                  <Badge className="font-serif">User</Badge>
+                )}
+              </div>
+              <span className="block truncate text-sm font-medium font-serif">
+                {user?.email}
+              </span>
+            </Dropdown.Header>
             <Dropdown.Item
-              onClick={() => navigate(`/additem/${user?._id}`)}
+              onClick={() => navigate(`/profile/${user?._id}`)}
               className="font-serif"
             >
-              Add Item
+              Profile
             </Dropdown.Item>
-          )}
-          <Dropdown.Item
-            onClick={() => navigate("/cart")}
-            className="font-serif"
-          >
-            Your Carts
-          </Dropdown.Item>
-          <Dropdown.Divider />
-          <Dropdown.Item onClick={handleLogout} className="font-serif">
-            Log Out
-          </Dropdown.Item>
-        </Dropdown>
-        <Navbar.Toggle />
-      </div>
+            <Dropdown.Item className="font-serif">Settings</Dropdown.Item>
+            <Dropdown.Item className="font-serif">Earnings</Dropdown.Item>
+            {user?.isAdmin && (
+              <Dropdown.Item
+                onClick={() => navigate(`/additem/${user?._id}`)}
+                className="font-serif"
+              >
+                Add Item
+              </Dropdown.Item>
+            )}
+            <Dropdown.Item
+              onClick={() => navigate("/cart")}
+              className="font-serif"
+            >
+              Your Carts
+            </Dropdown.Item>
+            <Dropdown.Divider />
+            <Dropdown.Item onClick={handleLogout} className="font-serif">
+              Log Out
+            </Dropdown.Item>
+          </Dropdown>
+          <Navbar.Toggle />
+        </div>
+      ) : (
+        <Button
+          className="font-serif"
+          outline
+          gradientDuoTone="tealToLime"
+          onClick={() => navigate("/login")}
+        >
+          Sign In
+        </Button>
+      )}
       <Navbar.Collapse>
         <Navbar.Link className="font-serif" href="#" active>
           Home

@@ -13,7 +13,9 @@ import { useSelector } from "react-redux";
 import { FormProvider, useForm } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
 import { addProduct } from "../http/networkRequest";
+import useAuth from "../hooks/useAuth";
 const AddItem = () => {
+  useAuth()
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const formMethods = useForm();
@@ -94,7 +96,7 @@ const AddItem = () => {
     }
   };
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 lg:mx-32">
       <div className="mx-auto my-2">
         <h1 className="text-[18px] md:text-2xl text-white font-serif">
           Add Product
@@ -120,6 +122,7 @@ const AddItem = () => {
                 id="productName"
                 type="text"
                 placeholder="enter product name"
+                className="font-serif"
                 {...register("name", { required: "Product Name is Required" })}
               />
               {errors.productName && (
@@ -168,6 +171,7 @@ const AddItem = () => {
               <TextInput
                 type="text"
                 id="description"
+                className="font-serif"
                 placeholder="enter product description"
                 {...register("description", {
                   required: "This field is required",
@@ -189,6 +193,7 @@ const AddItem = () => {
               </div>
               <TextInput
                 type="number"
+                className="font-serif"
                 placeholder="enter product price"
                 min={100}
                 max={9999}
@@ -237,56 +242,6 @@ const AddItem = () => {
                 </span>
               )}
             </div>
-            {/* <div>
-              <div>
-                <Label
-                  htmlFor="images"
-                  alt="product-images"
-                  value="Product Images :"
-                  className="text-[16px] font-serif text-white"
-                />
-              </div>
-              <FileInput
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleImageChange}
-                disabled={images.length > 3}
-              />
-              <div className="flex flex-col">
-                <span className="text-sm font-serif text-yellow-300">
-                  Number of images should not be exceed more than 3
-                </span>
-                {imageUploadWarning && (
-                  <span className="text-red-600 font-serif text-sm">
-                    {imageUploadWarning}
-                  </span>
-                )}
-              </div>
-              {images.length > 0 && (
-                <div className="grid grid-cols-3 gap-1 my-1">
-                  {images.map((image, index) => (
-                    <div
-                      className="relative flex justify-evenly gap-1 "
-                      key={uuid()}
-                    >
-                      <img
-                        src={URL.createObjectURL(image)}
-                        alt={`image preview ${index}`}
-                        className="h-32 w-24 object-cover"
-                      />
-                      <button
-                        onClick={() => removeImage(index)}
-                        className="absolute inset-0 items-center text-center text-white bg-opacity-50 hover:bg-gray-500 hover:bg-opacity-50 font-serif"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div> */}
-            {/* // demo */}
             <div>
               <div>
                 <Label

@@ -16,7 +16,9 @@ import {
 } from "flowbite-react";
 import { userLogoutStart, userLogoutSuccess } from "../redux/userSlice";
 import { updateProductToStore } from "../redux/productSlice";
+import useAuth from "../hooks/useAuth";
 const Update = () => {
+  useAuth()
   const [singleProductFromServer, setSingleProductFromServer] = useState({});
   const { productId,userId } = useParams();
   const formMethods = useForm();
@@ -141,7 +143,7 @@ const Update = () => {
     }
   };
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 lg:mx-32">
       <div className="mx-auto my-2">
         <h1 className="text-[18px] md:text-2xl text-white font-serif">
           Update Product

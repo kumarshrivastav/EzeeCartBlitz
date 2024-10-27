@@ -31,14 +31,7 @@ const Login = () => {
     }
   }
   return (
-    <div className="flex items-center">
-      {/* <div className="flex-1">
-        <img
-          src="/images/loginImage.jfif"
-          className="h-[650px]"
-          alt="register image"
-        />
-      </div> */}
+    <div className="flex items-center lg:mx-96">
       <div className="flex-1 mr-3">
         <form className="flex flex-col gap-4 mx-2 py-2" onSubmit={handleSubmit(onSubmit)}>
           <div>
@@ -51,6 +44,7 @@ const Login = () => {
             </div>
             <TextInput
               type="email"
+              className="font-serif"
               {...register("email",{required:"This field is required"})}
               id="email"
               placeholder="email123@gmail.com"
@@ -97,7 +91,7 @@ const Login = () => {
               disabled={Object.keys(errors).length>0}
             >
               Login here
-            </Button>)
+            </Button>) 
           }
         </form>
         <p className="text-white font-serif ml-2 my-2">

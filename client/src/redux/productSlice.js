@@ -41,7 +41,6 @@ export const productSlice = createSlice({
     updateProductToStore:(state,action)=>{
       const {productId,product}=action.payload
       // const updatedProduct=state.products.find((product)=>product?._id===productId)
-      console.log(action.payload)
       const index=state.products.findIndex((product)=>product?._id===productId)
       state.products.splice(index,1)
       state.products[index]=product

@@ -1,11 +1,12 @@
 import React from "react";
 import { Card, Button,List } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {v4 as uuidV4} from "uuid"
 import CardNumber from "../components/Cart/CartNumber"
 import CartItem from "../components/Cart/CartItem";
 import Line from "../components/Single/Line";
+import { cartBuyProducts } from "../redux/cartSlice";
 const Cart = () => {
   const {cartProductsFreq}=useSelector(state=>state.cart)
   const nav = useNavigate();
@@ -28,7 +29,7 @@ const Cart = () => {
       {
         cartProductsFreq.map(({freq,product})=>{
           return (
-            <div key={uuidV4()}>
+            <div key={uuidV4()} className="bg-white">
               {
                 freq >0 &&  (
                   <>

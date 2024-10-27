@@ -2,18 +2,19 @@ import react, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, FormProvider } from "react-hook-form";
 import { Label, TextInput, Button, Badge } from "flowbite-react";
-import { currentpwdstatus, updateprofile } from "../http/networkRequest";
+import { currentpwdstatus, passwordResetLink, updateprofile } from "../http/networkRequest";
 import { useParams } from "react-router-dom";
 import { userUpdateFailure, userUpdateStart, userUpdateSuccess } from "../redux/userSlice";
 import toast from "react-hot-toast";
+import useAuth from "../hooks/useAuth";
 const Profile = () => {
+  useAuth()
   const { userId } = useParams()
   const [currentPwdStatus, setCurrentPwdStatus] = useState(false)
   const [currentPwd, setCurrentPwd] = useState("")
   const [loading, setLoading] = useState(false)
   const formMethods = useForm();
   const [currentPwdVerify, setCurrentPwdVerify] = useState(false)
-  // console.log(currentPwd)
   const dispatch = useDispatch()
 
   const {
@@ -23,7 +24,6 @@ const Profile = () => {
     watch,
   } = formMethods;
   const [updateFormData, setUpdateFormData] = useState({});
-  // console.log(register)
   const [pwdVerified, setPwdVerified] = useState(true);
   const { user } = useSelector((state) => state.users);
   const [file, setFile] = useState(null);
@@ -50,6 +50,17 @@ const Profile = () => {
     } catch (error) {
       setLoading(false)
       console.log(error?.response?.data?.message)
+    }
+  }
+  const sendPasswordResetLink=async()=>{
+    alert('we have sent password reset link to your gmail')
+    setLoading(true)
+    try {
+      const {data}=await passwordResetLink(user?.email)
+      console.log(data)
+      setLoading(false)
+    } catch (error) {
+      setLoading(false)
     }
   }
   const handleImageChange = (e) => {
@@ -104,7 +115,7 @@ const Profile = () => {
     }
   };
   return (
-    <div>
+    <div className="flex flex-col lg:mx-32">
       <h2 className="text-xl text-center font-serif font-semibold text-white my-1">
         {user?.isAdmin ? "Admin Profile" : "User Profile"}
       </h2>
@@ -261,8 +272,8 @@ const Profile = () => {
                           loading ? "Please wait a moment" : "Verify Your Password"
                         }
                       </Button>
-                      <Button gradientDuoTone={'purpleToPink'} outline className="font-serif">
-                        Verify With Email
+                      <Button gradientDuoTone={'purpleToPink'} outline className="font-serif" onClick={sendPasswordResetLink} disabled={loading}>
+                        Change By Gmail
                       </Button>
                     </div>
                     <div className={`${currentPwdStatus ? "text-green-600" : "text-red-600"} mt-2 text-center border-2 p-1 ${currentPwdStatus ? "bg-pink-400" : "bg-cyan-400"} font-serif font-semibold`}>

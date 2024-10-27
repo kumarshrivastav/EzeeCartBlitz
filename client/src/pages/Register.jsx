@@ -31,7 +31,7 @@ const Register = () => {
 
   };
   return (
-    <div className="flex">
+    <div className="flex lg:mx-96">
       {/* <div className="flex-1">
         <img
           src="/images/registerImage.png"
@@ -56,6 +56,7 @@ const Register = () => {
             sizing={'sm'}
               type="text"
               id="firstName"
+              className="font-serif"
               placeholder="firstname"
               {...register("firstName", {
                 required: "This field is required",
@@ -78,6 +79,7 @@ const Register = () => {
               type="text"
               id="lastName"
               placeholder="lastname"
+              className="font-serif"
               {...register("lastName", {
                 required: "This field is required",
               })}
@@ -98,6 +100,7 @@ const Register = () => {
               type="email"
               sizing={'sm'}
               id="email"
+              className="font-serif"
               placeholder="email123@gmail.com"
               {...register("email", {
                 required: "This field is required",

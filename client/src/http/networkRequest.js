@@ -19,3 +19,21 @@ export const similarProductsFromServer = (queryParams) =>
   axios.get(`/api/product/similarproducts?${queryParams}`);
 export const updateProduct = (userId, productId, formData) =>
   axios.post(`/api/product/updateproduct/${userId}/${productId}`, formData);
+export const createCheckoutSession = (userId, customerInfo, cartItems) =>
+  axios.post(`/api/product/create-checkout-session/${userId}`, {
+    products: cartItems,
+    customerInfo,
+  });
+export const checkout_payment_intent = (userId, customerInfo, products) =>
+  axios.post(`/api/product/create-payment-intent/${userId}`, {
+    products,
+    customerInfo,
+  });
+
+export const resetPasswordByGmail = (userId, data) =>
+  axios.put(`/api/user/resetpasswordbygmail/${userId}`, data);
+export const passwordResetLink = (email) =>
+  axios.post("/api/user/passwordresetlink", {email});
+export const deleteProductById=(productId)=>axios.delete(`/api/product/delete-product-by-id/${productId}`)
+export const productOnSearchTerm=(urlParams)=>axios.get(`/api/product/productbysearch?${urlParams}`)
+export const productOnSelect=(urlParams)=>axios.get(`/api/product/productbyselect?${urlParams}`)

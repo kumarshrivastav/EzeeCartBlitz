@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import data from "../data";
-import { Button, Rating } from "flowbite-react";
+import { Button, Modal, Rating } from "flowbite-react";
 import Line from "../components/Single/Line";
 import { v4 as uuid } from "uuid";
 // image sliding
@@ -19,12 +19,17 @@ import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
 import {
+  deleteProductById,
   similarProductsFromServer,
   singleProduct,
 } from "../http/networkRequest";
+import toast from "react-hot-toast";
+import useAuth from "../hooks/useAuth";
 const Single = () => {
+  // useAuth()
   const [isZoomed, setIsZoomed] = useState(false);
   const { user } = useSelector((state) => state.users);
+  const [openModal, setOpenModal] = useState(false);
   const {
     products,
     singleProduct: singleProductFromStore,
@@ -35,12 +40,13 @@ const Single = () => {
   const { id } = useParams();
   const [singleProduct, setSingleProduct] = useState({});
   const dispatch = useDispatch();
+  const [isDeleted, setIsDeleted] = useState(false);
   const [similarProducts, setSimilarProducts] = useState([]);
   useEffect(() => {
     dispatch(setSingleProductToStore(id));
 
     console.log(id);
-  },[id]);
+  }, [id]);
   useEffect(() => {
     // console.log(singleProductFromStore)
 
@@ -72,11 +78,30 @@ const Single = () => {
         }
       } catch (error) {
         console.error("Error fetching data:", error);
-      } 
+      }
     };
 
     fetchData();
-  }, [id, singleProduct,singleProductFromStore,similarProductsFromStore, similarProducts, dispatch]);
+  }, [
+    id,
+    singleProduct,
+    singleProductFromStore,
+    similarProductsFromStore,
+    similarProducts,
+    dispatch,
+  ]);
+  const closeHandleModal = () => {
+    setOpenModal(false);
+  };
+  const handleProductDelete = async () => {
+    try {
+      const { data } = await deleteProductById(id);
+      setIsDeleted(true);
+      toast.success(data);
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+  };
   return (
     <div className="grid grid-cols-1 my-8 mx-4">
       <div className="">
@@ -106,6 +131,39 @@ const Single = () => {
             ))}
           </Swiper>
         </div>
+        <Modal show={openModal} size="md" popup onClose={closeHandleModal}>
+          <Modal.Header />
+          <Modal.Body>
+            {isDeleted ? (
+              <div className="flex flex-row">
+                <h1>Product have been deleted Successfully</h1>
+                <span>✔</span>
+              </div>
+            ) : (
+              <div className="flex flex-col">
+                <h1 className="text-black font-serif">
+                  Are You Sure Want To Delete This Product
+                </h1>
+                <div className="flex flex-row justify-evenly my-4">
+                  <Button
+                    className="flex border-2 flex-col font-serif text-center cursor-pointer"
+                    outline
+                    onClick={handleProductDelete}
+                  >
+                    Yes 👍{" "}
+                  </Button>
+                  <Button
+                    className="flex border-2 flex-col font-serif text-center cursor-pointer"
+                    outline
+                    onClick={()=>setOpenModal(false)}
+                  >
+                    No 👎
+                  </Button>
+                </div>
+              </div>
+            )}
+          </Modal.Body>
+        </Modal>
         {user?.isAdmin && (
           <div className="flex flex-row justify-between my-2 mx-1">
             <span
@@ -114,7 +172,10 @@ const Single = () => {
             >
               Update
             </span>
-            <span className="cursor-pointer text-red-600 font-serif font-semibold">
+            <span
+              onClick={() => setOpenModal(true)}
+              className="cursor-pointer text-red-600 font-serif font-semibold"
+            >
               Delete
             </span>
           </div>
@@ -146,7 +207,7 @@ const Single = () => {
               )}
             </Rating>
           </div>
-          {cartItems.findIndex((p)=>p._id===singleProduct?._id) === -1 ? (
+          {cartItems.findIndex((p) => p._id === singleProduct?._id) === -1 ? (
             <AddToCart product={singleProduct} />
           ) : (
             <RemoveToCart product={singleProduct} />

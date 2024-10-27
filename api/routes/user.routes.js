@@ -22,5 +22,8 @@ userRouter.post("/login",userLoginFields,userController.login)
 userRouter.get("/logout",userController.logout)
 userRouter.post("/currentpwdstatus/:userId",verifyToken,userController.currentPwdStatus)
 userRouter.put("/updateprofile/:userId",verifyToken,upload.array('avatar',1),userController.updateProfile)
+userRouter.put("/resetpasswordbygmail/:userId",verifyToken,userController.resetUserPasswordByGmail)
+userRouter.post("/passwordresetlink",verifyToken,userController.passwordResetLink)
+
 // userRouter.post('/additem/:userId',verifyToken,)
 export default userRouter;
