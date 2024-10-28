@@ -11,7 +11,7 @@ const useAuth = () => {
     useEffect(()=>{
         const checkTokenExpiration=async()=>{
             const ttl=user?.ttl
-            if(ttl && ttl<Math.round(Date.now())){
+            if(ttl && ttl<Math.round(Date.now()/1000)){
                 toast.success("Session Timeout.......")
                 await logoutuser()
                 dispatch(userLogoutSuccess())
