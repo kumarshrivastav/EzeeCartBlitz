@@ -1,17 +1,21 @@
 import React, { useState } from "react";
-import { Label, TextInput, Button, Spinner } from "flowbite-react";
+import { Label, TextInput, Button, Spinner, Modal } from "flowbite-react";
 import { Link, useNavigate,useLocation } from "react-router-dom";
 import {useForm} from "react-hook-form"
-import { userLogin } from "../http/networkRequest";
+import { passwordResetLink, userLogin } from "../http/networkRequest";
 import toast from "react-hot-toast";
-import {useDispatch} from "react-redux"
+import {useDispatch, useSelector} from "react-redux"
 import {userLoginFailure,userLoginStart,userLoginSuccess} from "../redux/userSlice"
+import Popup from "../components/Popup/Popup";
 const Login = () => {
   const dispatch=useDispatch()
   const location=useLocation()
+  const {user}=useSelector(state=>state.users)
   const {register,watch,handleSubmit,formState:{errors}}=useForm()
   const [loading,setLoading]=useState(false)
+  const [openModel,setOpenModel]=useState(false)
   const navigate=useNavigate()
+  console.log(openModel)
   const onSubmit=async(data)=>{
   const from=location.state?.from || "/"
     try {
@@ -30,6 +34,7 @@ const Login = () => {
       console.log(error.response.data.message)
     }
   }
+  
   return (
     <div className="flex items-center lg:mx-96">
       <div className="flex-1 mr-3">
@@ -79,6 +84,11 @@ const Login = () => {
               )
             }
           </div>
+          <Popup openModel={openModel} setOpenModel={setOpenModel}/>
+              <span onClick={(e)=>{
+                e.stopPropagation()
+                setOpenModel(!openModel)
+              }} className="text-sm text-blue-600 cursor-pointer font-serif">Forgot Password</span>
           {
             loading ? (<Button className="font-serif my-3 rounded-none">
               <Spinner aria-label="Spinner label" size={'sm'}/>

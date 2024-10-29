@@ -149,14 +149,14 @@ class UserController {
   async resetUserPasswordByGmail(req, res, next) {
     try {
       const { password, confirmPassword } = req.body;
-      const { userId } = req.params;
+      const { email } = req.params;
       if (!password || !confirmPassword) {
         return next(ErrorHandler(400, "please provide all the fileds"));
       }
       if (password !== confirmPassword) {
         return next(ErrorHandler(400, "confirm password is not matching"));
       }
-      const user = await userModel.findById(userId);
+      const user = await userModel.findOne({email})
       if (!user) {
         return next(ErrorHandler(404, "User Not Found"));
       }
@@ -165,17 +165,17 @@ class UserController {
       await user.save();
       return res
         .status(201)
-        .send("Your have been password changed successfully");
+        .send("Your password has been changed successfully");
     } catch (error) {
       next(error);
     }
   }
   async passwordResetLink(req, res, next) {
-    const userId = req.userId;
-    const { email } = req.body;
-    console.log(req.body);
+    // const userId = req.userId;
+    const { email } = req.params;
+    console.log(console.log(email));
     try {
-      const result = await ResetYourPassword(email, userId);
+      const result = await ResetYourPassword(email);
       console.log(result);
       return res.status(200).send(result);
     } catch (error) {
