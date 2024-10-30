@@ -35,7 +35,7 @@ const CheckoutForm = ({ dpmCheckerLink, onPaymentSuccess }) => {
         },
       });
       if (!error) {
-        navigate("/complete");
+        navigate("https://ezeecartblitz.onrender.com/complete");
         onPaymentSuccess();
       }
       console.log(error);

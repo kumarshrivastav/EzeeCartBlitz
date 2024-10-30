@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-// import { checkout_payment_intent } from '../http/networkRequest';
 import { useSelector } from "react-redux";
-// import CheckoutForm from './CheckOutForm';
-import PaymentCompletePage from "./PaymentCompletePage";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { checkout_payment_intent } from "../http/networkRequest";
 import CheckoutForm from "./CheckoutForm";
 import useAuth from "../hooks/useAuth";
-// import CheckoutForm from './CheckOutForm';
 const stripePublishableKey =
   "pk_test_51Oo1B7SE8GUpcmyiuToMDAKefKug09LmbEq12aSJ1efiASb7oSgPSZCz1xgFiY4ffFMiXogDIMG1thQL2HgvKyI300PSk8q2US";
 const stripePromise = loadStripe(stripePublishableKey);

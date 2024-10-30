@@ -15,11 +15,11 @@ export const similarProductsFromServer = (queryParams) =>
   axios.get(`/api/product/similarproducts?${queryParams}`);
 export const updateProduct = (userId, productId, formData) =>
   axios.post(`/api/product/updateproduct/${userId}/${productId}`, formData);
-export const createCheckoutSession = (userId, customerInfo, cartItems) =>
-  axios.post(`/api/product/create-checkout-session/${userId}`, {
-    products: cartItems,
-    customerInfo,
-  });
+// export const createCheckoutSession = (userId, customerInfo, cartItems) =>
+//   axios.post(`/api/product/create-checkout-session/${userId}`, {
+//     products: cartItems,
+//     customerInfo,
+//   });
 export const checkout_payment_intent = (userId, customerInfo, products) =>
   axios.post(`/api/product/create-payment-intent/${userId}`, {
     products,
