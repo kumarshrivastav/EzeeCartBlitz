@@ -18,7 +18,7 @@ const Product = ({ product }) => {
   // console.log(product)
   return (
     <div >
-      <div className="flex flex-col justify-between mx-auto  bg-white h-[360px] w-[370px] lg:h-[340px] lg:w-72 rounded-lg p-1">
+      <div className="flex flex-col justify-between mx-auto  bg-white h-[360px] w-96 lg:h-[340px] lg:w-72 rounded-lg p-1">
       <div>
       <Swiper pagination={{ dynamicBullets: true }} modules={[Pagination]} className="w-full h-full">
         {product?.images?.map((image) => (

@@ -3,6 +3,9 @@ import calculateProductAmount from "../utils/calculateProductAmount.js";
 import ErrorHandler from "../utils/error.handler.js";
 import { v2 } from "cloudinary";
 import Stripe from "stripe";
+console.log(process.env.STRIPE_SECRET_KEY)
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
 class ProductController {
   async addProduct(req, res, next) {
     try {
@@ -109,8 +112,6 @@ class ProductController {
   }
 
   async createPaymentIntent(req, res, next) {
-    console.log(process.env.STRIPE_SECRET_KEY)
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     try {
       const { products, customerInfo } = req.body;
       if (!customerInfo || !customerInfo.customerName) {

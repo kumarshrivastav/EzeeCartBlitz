@@ -4,7 +4,6 @@ import { v4 as uuidV4 } from "uuid";
 import { loadStripe } from "@stripe/stripe-js";
 import CartBuyButton from "./CartBuyButton";
 import { useSelector, useDispatch } from "react-redux";
-import { createCheckoutSession } from "../../http/networkRequest";
 import Checkout from "../Checkout/Checkout";
 import { useNavigate } from "react-router-dom";
 import { setCustomerInfo } from "../../redux/userSlice";
