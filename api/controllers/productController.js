@@ -109,6 +109,7 @@ class ProductController {
   }
 
   async createPaymentIntent(req, res, next) {
+    console.log(process.env.STRIPE_SECRET_KEY)
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     try {
       const { products, customerInfo } = req.body;
