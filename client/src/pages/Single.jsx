@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import data from "../data";
 import { Button, Modal, Rating } from "flowbite-react";
 import Line from "../components/Single/Line";
 import { v4 as uuid } from "uuid";
@@ -21,17 +20,12 @@ import "react-medium-image-zoom/dist/styles.css";
 import {
   deleteProductById,
   similarProductsFromServer,
-  singleProduct,
 } from "../http/networkRequest";
 import toast from "react-hot-toast";
-import useAuth from "../hooks/useAuth";
 const Single = () => {
-  // useAuth()
-  const [isZoomed, setIsZoomed] = useState(false);
   const { user } = useSelector((state) => state.users);
   const [openModal, setOpenModal] = useState(false);
   const {
-    products,
     singleProduct: singleProductFromStore,
     similarProducts: similarProductsFromStore,
   } = useSelector((state) => state.products);
@@ -48,8 +42,6 @@ const Single = () => {
     console.log(id);
   }, [id]);
   useEffect(() => {
-    // console.log(singleProductFromStore)
-
     const fetchData = async () => {
       try {
         // Fetch single product
@@ -103,9 +95,9 @@ const Single = () => {
     }
   };
   return (
-    <div className="grid grid-cols-1 my-8 mx-4">
-      <div className="">
-        <div className="mx-auto bg-white rounded-lg h-80">
+    <div className="grid grid-cols-1 my-4  lg:my-8 lg:mx-4">
+      <div className="mx-2">
+        <div className="lg:mx-auto bg-white rounded-lg h-80">
           <Swiper
             pagination={{ dynamicBullets: true }}
             modules={[Pagination]}
@@ -155,7 +147,7 @@ const Single = () => {
                   <Button
                     className="flex border-2 flex-col font-serif text-center cursor-pointer"
                     outline
-                    onClick={()=>setOpenModal(false)}
+                    onClick={() => setOpenModal(false)}
                   >
                     No 👎
                   </Button>
@@ -219,7 +211,6 @@ const Single = () => {
         Similar Products Like This
       </h2>
       <Products data={similarProducts} />
-      {/* <Button onClick={}>Fetch Similar Products</Button> */}
     </div>
     // <h1>Hello </h1>
   );

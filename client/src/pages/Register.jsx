@@ -6,39 +6,30 @@ import { userRegister } from "../http/networkRequest";
 import toast from "react-hot-toast";
 
 const Register = () => {
-  const nav=useNavigate()
+  const nav = useNavigate();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm();
-  const [loading,setLoading]=useState(false)
-  const onSubmit =async (data) => {
-    const {confirmPwd,...rest}=data
+  const [loading, setLoading] = useState(false);
+  const onSubmit = async (data) => {
+    const { confirmPwd, ...rest } = data;
     try {
-      setLoading(true)
-      const {data}=await userRegister(rest)
-      toast.success("User Registered Successfully")
-      console.log(data)
-      setLoading(false)
-      nav("/login")
+      setLoading(true);
+      await userRegister(rest);
+      toast.success("User Registered Successfully");
+      setLoading(false);
+      nav("/login");
     } catch (error) {
-      toast.error(error?.response?.data?.message)
-      setLoading(false)
-      console.log(error.response.data.message)
+      toast.error(error?.response?.data?.message);
+      setLoading(false);
+      console.log(error.response.data.message);
     }
-
   };
   return (
     <div className="flex lg:mx-96">
-      {/* <div className="flex-1">
-        <img
-          src="/images/registerImage.png"
-          className="h-[585px]"
-          alt="register image"
-        />
-      </div> */}
       <div className="flex-1">
         <form
           className="flex flex-col gap-2 mx-2 py-2"
@@ -53,7 +44,7 @@ const Register = () => {
               />
             </div>
             <TextInput
-            sizing={'sm'}
+              sizing={"sm"}
               type="text"
               id="firstName"
               className="font-serif"
@@ -75,7 +66,7 @@ const Register = () => {
               />
             </div>
             <TextInput
-            sizing={'sm'}
+              sizing={"sm"}
               type="text"
               id="lastName"
               placeholder="lastname"
@@ -98,7 +89,7 @@ const Register = () => {
             </div>
             <TextInput
               type="email"
-              sizing={'sm'}
+              sizing={"sm"}
               id="email"
               className="font-serif"
               placeholder="email123@gmail.com"
@@ -125,7 +116,7 @@ const Register = () => {
             <TextInput
               type="password"
               id="password"
-              sizing={'sm'}
+              sizing={"sm"}
               placeholder="********"
               {...register("password", {
                 required: "This field is required",
@@ -148,7 +139,7 @@ const Register = () => {
               />
             </div>
             <TextInput
-            sizing={'sm'}
+              sizing={"sm"}
               type="password"
               id="confirmPwd"
               placeholder="********"
@@ -168,21 +159,22 @@ const Register = () => {
             )}
           </div>
 
-          {
-            loading ? (<Button className="font-serif my-3 rounded-none">
-              <Spinner aria-label="Spinner button" size={'sm'}/>
+          {loading ? (
+            <Button className="font-serif my-3 rounded-none">
+              <Spinner aria-label="Spinner button" size={"sm"} />
               <span className="font-serif ml-2">Please wait...</span>
-            </Button>):(<Button
-              
+            </Button>
+          ) : (
+            <Button
               gradientDuoTone={"tealToLime"}
               outline
               className="w-full my-5 font-serif rounded-none"
               type="submit"
-              disabled={Object.keys(errors).length>0}
+              disabled={Object.keys(errors).length > 0}
             >
               Create New Account
-            </Button>)
-          }
+            </Button>
+          )}
         </form>
         <p className="text-white font-serif ml-2 mb-2">
           If Already Registered ?{" "}

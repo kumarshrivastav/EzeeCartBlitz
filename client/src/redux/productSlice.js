@@ -1,15 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
-import data from "../data.js";
-import { uniq, sortBy, cloneDeep } from "lodash";
+import { sortBy } from "lodash";
 import stringSimilarity from "string-similarity-js";
-const categories = uniq(data.map((product) => product.category)).sort();
+const categories = ["Gloves","Hats","Jackets","Scarfs","Socks"]
 const DEFAULT_CATEGORY = "All";
 const initialState = {
   products: [],
   originalProducts: [],
   loading: false,
   error: null,
-  productsFromSearch: data,
+  productsFromSearch: [],
   categories: [DEFAULT_CATEGORY, ...categories],
   selectedCategory: DEFAULT_CATEGORY,
   singleProduct: {},
@@ -57,10 +56,6 @@ export const productSlice = createSlice({
           state.productsFromSearch,
           "simScore"
         ).reverse();
-        // state.products.forEach((p)=>{
-        //   p.simScore=stringSimilarity(`${p.name} ${p.category}`,searchTerm)
-        // })
-        // state.products=sortBy(state.products,"simScore").reverse();
       }
     },
     setDefaultProducts: (state) => {
@@ -82,17 +77,14 @@ export const productSlice = createSlice({
     },
     setSingleProduct: (state, action) => {
       const { payload: id } = action;
-      console.log(id)
       state.singleProduct = state.products.find(
         (product) => product._id === id
       );
-      console.log(state.singleProduct)
       state.similarProducts = state.products.filter(
         (product) =>
           product.category === state.singleProduct?.category &&
           product._id !== state.singleProduct?._id
       );
-      console.log(state.similarProducts)
     },
   },
 });

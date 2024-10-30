@@ -89,10 +89,10 @@ const STATUS_CONTENT_MAP = {
 };
 const PaymentCompletePage = () => {
   const stripe = useStripe();
-  const dispatch=useDispatch()
+  const dispatch = useDispatch();
   const [status, setStatus] = useState("default");
   const [intentId, setIntentId] = useState(null);
-  
+
   useEffect(() => {
     if (!stripe) {
       return;
@@ -113,8 +113,8 @@ const PaymentCompletePage = () => {
 
       setStatus(paymentIntent.status);
       setIntentId(paymentIntent.id);
-      dispatch(cartBuyProducts())
-      dispatch(removeCustomerInfo())
+      dispatch(cartBuyProducts());
+      dispatch(removeCustomerInfo());
     });
   }, [stripe]);
 
@@ -127,9 +127,17 @@ const PaymentCompletePage = () => {
       >
         {STATUS_CONTENT_MAP[status].icon}
       </div>
-      <h2 id="status-text" className="bg-green-500 font-serif p-3 text-white text-lg" >{STATUS_CONTENT_MAP[status].text}</h2>
+      <h2
+        id="status-text"
+        className="bg-green-500 font-serif p-3 text-white text-lg"
+      >
+        {STATUS_CONTENT_MAP[status].text}
+      </h2>
       {intentId && (
-        <div id="details-table" className="flex flex-col bg-yellow-300 font-serif px-3">
+        <div
+          id="details-table"
+          className="flex flex-col bg-yellow-300 font-serif px-3"
+        >
           <table>
             <tbody>
               <tr>
@@ -178,7 +186,11 @@ const PaymentCompletePage = () => {
           </svg>
         </a>
       )} */}
-      <a id="retry-button" href="/" className="bg-orange-700 text-lg font-serif px-3 py-2">
+      <a
+        id="retry-button"
+        href="/"
+        className="bg-orange-700 text-lg font-serif px-3 py-2"
+      >
         Test another
       </a>
     </div>

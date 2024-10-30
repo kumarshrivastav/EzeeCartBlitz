@@ -10,10 +10,11 @@ import { checkout_payment_intent } from "../http/networkRequest";
 import CheckoutForm from "./CheckoutForm";
 import useAuth from "../hooks/useAuth";
 // import CheckoutForm from './CheckOutForm';
-const stripePublishableKey = "pk_test_51Oo1B7SE8GUpcmyiuToMDAKefKug09LmbEq12aSJ1efiASb7oSgPSZCz1xgFiY4ffFMiXogDIMG1thQL2HgvKyI300PSk8q2US"
+const stripePublishableKey =
+  "pk_test_51Oo1B7SE8GUpcmyiuToMDAKefKug09LmbEq12aSJ1efiASb7oSgPSZCz1xgFiY4ffFMiXogDIMG1thQL2HgvKyI300PSk8q2US";
 const stripePromise = loadStripe(stripePublishableKey);
 const CheckoutPaymentIntent = () => {
-  useAuth()
+  useAuth();
   const { user, customerInfo } = useSelector((state) => state.users);
   const { cartItems } = useSelector((state) => state.cart);
   const [clientSecret, setClientSecret] = useState("");

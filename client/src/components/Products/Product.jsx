@@ -18,7 +18,7 @@ const Product = ({ product }) => {
   // console.log(product)
   return (
     <div >
-      <div className="flex flex-col justify-between mx-auto  bg-white h-[340px] w-80 rounded-lg p-1">
+      <div className="flex flex-col justify-between mx-auto  bg-white h-[360px] w-[370px] lg:h-[340px] lg:w-72 rounded-lg p-1">
       <div>
       <Swiper pagination={{ dynamicBullets: true }} modules={[Pagination]} className="w-full h-full">
         {product?.images?.map((image) => (
@@ -33,17 +33,9 @@ const Product = ({ product }) => {
           </SwiperSlide>
         ))}
       </Swiper>
-        {/* <img
-          src={product?.images[0]}
-          alt={product.name}
-          className="h-32 w-full object-contain cursor-pointer"
-          title={product.name}
-          onClick={() => navigate(`/single/${product._id}`)}
-        /> */}
       </div>
       <div className="">
         <div className="p-1 flex flex-col gap-1 ">
-    
           <p className="font-serif text-sm font-semibold">
             Name : {product?.name}
           </p>
@@ -52,7 +44,6 @@ const Product = ({ product }) => {
           </span>
           <div className="flex flex-row">
             <span className="font-serif font-semibold text-sm">Product Rating :&nbsp;</span>
-          {/* <div className="flex items-center gap-2 mt-2"> */}
                 <Rating>
                   {
                     Array.from({length:5},(_,i)=>(
@@ -60,15 +51,11 @@ const Product = ({ product }) => {
                     ))
                   }
                 </Rating>
-                
-              {/* </div> */}
           </div>
           <p className="font-serif text-sm text-justify text-gray-500 line-clamp-2">
             Description : {product?.description}
           </p>
-          
         </div>
-
       </div>
       <div className="mb-1">
             {cartItems.findIndex((item)=>item?._id===product?._id) === -1 ? (
@@ -79,36 +66,6 @@ const Product = ({ product }) => {
           </div>
       </div>
     </div>
-    // <Card className="h-96 w-72">
-    //   <Swiper pagination={{ dynamicBullets: true }} modules={[Pagination]} className="w-full h-full">
-    //     {product?.images?.map((image) => (
-    //       <SwiperSlide className="flex justify-items-center items-center">
-    //         <img
-    //           src={image}
-    //           alt={product.name}
-    //           className="h-32 w-full object-contain cursor-pointer"
-    //           title={product.name}
-    //           onClick={() => navigate(`/single/${product._id}`)}
-    //         />
-    //       </SwiperSlide>
-    //     ))}
-    //   </Swiper>
-    //   <h4 className="text-black text-sm font-semibold font-serif">
-    //     {product.name}
-    //   </h4>
-    //   <h5 className="text-black font-bold text-sm font-sans">
-    //     Price:&nbsp;<span>&#8377;&nbsp;{product.price}</span>
-    //   </h5>
-    //   <p className="text-sm text-gray-400 line-clamp-2 text-[14px] font-serif">
-    //     <span className="font-semibold">Description : </span>
-    //     {product.description}
-    //   </p>
-    //   {cartItems.indexOf(JSON.stringify(product)) === -1 ? (
-    //     <AddToCart product={product} />
-    //   ) : (
-    //     <RemoveToCart product={product} />
-    //   )}
-    // </Card>
   );
 };
 

@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { logoutuser, singleProduct, updateProduct } from "../http/networkRequest";
+import {
+  logoutuser,
+  singleProduct,
+  updateProduct,
+} from "../http/networkRequest";
 import { useForm, FormProvider } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 import { toast } from "react-hot-toast";
-import { addProduct } from "../http/networkRequest";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Button,
   Label,
@@ -18,13 +21,13 @@ import { userLogoutStart, userLogoutSuccess } from "../redux/userSlice";
 import { updateProductToStore } from "../redux/productSlice";
 import useAuth from "../hooks/useAuth";
 const Update = () => {
-  useAuth()
+  useAuth();
   const [singleProductFromServer, setSingleProductFromServer] = useState({});
-  const { productId,userId } = useParams();
+  const { productId, userId } = useParams();
   const formMethods = useForm();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const dispatch=useDispatch()
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -44,34 +47,29 @@ const Update = () => {
     setImageUploadWarning("");
     const files = Array.from(e.target.files);
     const totalLength = files.length + watchedImages?.length;
-    if(totalLength>3){
-      alert("you can only upload maximum of 3 images")
+    if (totalLength > 3) {
+      alert("you can only upload maximum of 3 images");
     }
-      setValue('imageFiles',[...files,...uploadedImagesFiles].slice(0,3-(watchedImages?.length)))
-      setUploadedImagesFiles([...files,...uploadedImagesFiles].slice(0,3-(watchedImages?.length)))
+    setValue(
+      "imageFiles",
+      [...files, ...uploadedImagesFiles].slice(0, 3 - watchedImages?.length)
+    );
+    setUploadedImagesFiles(
+      [...files, ...uploadedImagesFiles].slice(0, 3 - watchedImages?.length)
+    );
   };
-  console.log(watchedImages);
-  console.log(uploadedImagesFiles)
-  const removeImage = (index) => {
-    setImageUploadStatus(false);
-    setImageUploadWarning("");
-    // const newImages = [...images];
-    watchedImages.splice(index, 1);
-    setImages(watchedImages);
-    setValue("images", watchedImages);
-  };
-  // console.log(watchedImages);
+
   const handleDelete = (event, imageUrl) => {
     event.preventDefault();
     try {
-      if(watchedImages?.length===1 && uploadedImagesFiles?.length===0){
-        setImageUploadWarning('atleast one image should be added')
-        return
+      if (watchedImages?.length === 1 && uploadedImagesFiles?.length === 0) {
+        setImageUploadWarning("atleast one image should be added");
+        return;
       }
       setValue(
         "images",
         watchedImages?.filter((image) => image !== imageUrl)
-      );      
+      );
     } catch (error) {
       console.log(error);
     }
@@ -80,9 +78,9 @@ const Update = () => {
     const fetchData = async () => {
       try {
         const { data } = await singleProduct(productId);
-        setSingleProductFromServer(data)
+        setSingleProductFromServer(data);
         formMethods.reset();
-        setImageUploadWarning("")
+        setImageUploadWarning("");
         reset(data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -102,10 +100,6 @@ const Update = () => {
         setImageUploadStatus(false);
         setValue("images", [...data.images]);
       }
-      // if (data?.images === undefined || data?.images?.length === 0) {
-      //   setImageUploadStatus(true);
-      //   setImageUploadWarning("atleast one image should be added");
-      // }
       const jsonFormData = new FormData();
       data.name && jsonFormData.append("name", data.name);
       data.description && jsonFormData.append("description", data.description);
@@ -117,11 +111,17 @@ const Update = () => {
         Array.from(data.images).forEach((image, index) =>
           jsonFormData.append(`images`, image)
         );
-      data?.imageFiles !== undefined && Array.from(data?.imageFiles)?.length !== 0 && (
-        Array.from(data?.imageFiles).forEach((imageFile)=>jsonFormData.append('imageFiles',imageFile))
-      )
-      const { data: {savedUpdatedProduct,msg} } = await updateProduct(userId,productId,jsonFormData);
-      dispatch(updateProductToStore({productId,product:savedUpdatedProduct}))
+      data?.imageFiles !== undefined &&
+        Array.from(data?.imageFiles)?.length !== 0 &&
+        Array.from(data?.imageFiles).forEach((imageFile) =>
+          jsonFormData.append("imageFiles", imageFile)
+        );
+      const {
+        data: { savedUpdatedProduct, msg },
+      } = await updateProduct(userId, productId, jsonFormData);
+      dispatch(
+        updateProductToStore({ productId, product: savedUpdatedProduct })
+      );
       formMethods.reset();
       setImages([]);
       setValue("images", []);
@@ -130,8 +130,11 @@ const Update = () => {
       toast.success(msg);
     } catch (error) {
       setLoading(false);
-      if(String(error?.response?.data?.message).toLowerCase() === String("jwt must be provided").toLowerCase()){
-        toast.error("Session expired login again...")
+      if (
+        String(error?.response?.data?.message).toLowerCase() ===
+        String("jwt must be provided").toLowerCase()
+      ) {
+        toast.error("Session expired login again...");
         dispatch(userLogoutStart());
         const { data } = await logoutuser();
         window.localStorage.clear();
@@ -286,55 +289,6 @@ const Update = () => {
                 </span>
               )}
             </div>
-            {/* <div>
-              <div>
-                <Label
-                  htmlFor="images"
-                  alt="product-images"
-                  value="Product Images :"
-                  className="text-[16px] font-serif text-white"
-                />
-              </div>
-              <FileInput
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleImageChange}
-                disabled={images.length > 3}
-              />
-              <div className="flex flex-col">
-                <span className="text-sm font-serif text-yellow-300">
-                  Number of images should not be exceed more than 3
-                </span>
-                {imageUploadWarning && (
-                  <span className="text-red-600 font-serif text-sm">
-                    {imageUploadWarning}
-                  </span>
-                )}
-              </div>
-              {watchedImages?.length > 0 && (
-                <div className="grid grid-cols-3 gap-1 my-1">
-                  {watchedImages?.map((image, index) => (
-                    <div
-                      className="relative flex justify-evenly gap-1 "
-                      key={uuid()}
-                    >
-                      <img
-                        src={image}
-                        alt={`image preview ${index}`}
-                        className="h-32 w-24 object-cover"
-                      />
-                      <button
-                        onClick={() => removeImage(index)}
-                        className="absolute inset-0 items-center text-center text-white bg-opacity-50 hover:bg-gray-500 hover:bg-opacity-50 font-serif"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div> */}
             <div>
               <div>
                 <Label
@@ -348,35 +302,9 @@ const Update = () => {
                 type="file"
                 accept="image/*"
                 multiple
-                // {...register("imageFiles", {
-                //   validate: (imageFiles) => {
-                //     const totalLength =
-                //       (watchedImages?.length || 0) + imageFiles?.length;
-                //     if (totalLength === 0) {
-                //       return "Atleast one image should be added";
-                //     }
-                //     if (totalLength > 3) {
-                //       return "No of Images should not more than 3";
-                //     }
-                //     if(totalLength<3 && totalLength>0){
-                //       setUploadedImagesFiles(imageFiles)
-                //     }
-                //   },
-                //   onChange:(e)=>setUploadedImagesFiles(e.target.files)
-                // })}
                 onChange={handleImageChange}
-                disabled={watchedImages?.length>=3}
+                disabled={watchedImages?.length >= 3}
               />
-              {/* <div className="flex flex-col">
-                <span className="text-sm font-serif text-yellow-300">
-                  Number of images should not be exceed more than 3
-                </span>
-                {imageUploadWarning && (
-                  <span className="text-red-600 font-serif text-sm">
-                    {imageUploadWarning}
-                  </span>
-                )}
-              </div> */}
               {imageUploadWarning && (
                 <span className="text-red-600 font-serif text-sm">
                   {imageUploadWarning}
@@ -403,46 +331,58 @@ const Update = () => {
                       </button>
                     </div>
                   ))}
-                  {Array.from(uploadedImagesFiles)?.length>0 && Array.from(uploadedImagesFiles).map((file, index) => (
-                    watchedImages?.length+(index+1)<4 && ((
-                      <div
-                        className="relative flex justify-evenly gap-1"
-                        key={uuid()}
-                      >
-                        <img
-                          src={URL.createObjectURL(file)}
-                          alt={`new image preview ${index}`}
-                          className="h-32 w-24 object-cover"
-                        />
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault()
-                            console.log('watchedImage Length:',watchedImages?.length)
-                            console.log('uploadedImageFiles Length;',uploadedImagesFiles?.length)
-                            if(watchedImages?.length===0 && uploadedImagesFiles?.length===1){
-                              setImageUploadWarning('atleast one image should be added')
-                              return
-                            }
-                            const newFiles = Array.from(uploadedImagesFiles).filter(
-                              (_, i) => i !== index
-                            );
-                            setUploadedImagesFiles(newFiles);
-                            setValue('imageFiles',newFiles)
-                            
-                          
-                          }}
-                          className="absolute inset-0 items-center text-center text-white bg-opacity-50 hover:bg-gray-500 hover:bg-opacity-50 font-serif"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    ))
-                    
-                  ))}
+                  {Array.from(uploadedImagesFiles)?.length > 0 &&
+                    Array.from(uploadedImagesFiles).map(
+                      (file, index) =>
+                        watchedImages?.length + (index + 1) < 4 && (
+                          <div
+                            className="relative flex justify-evenly gap-1"
+                            key={uuid()}
+                          >
+                            <img
+                              src={URL.createObjectURL(file)}
+                              alt={`new image preview ${index}`}
+                              className="h-32 w-24 object-cover"
+                            />
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                console.log(
+                                  "watchedImage Length:",
+                                  watchedImages?.length
+                                );
+                                console.log(
+                                  "uploadedImageFiles Length;",
+                                  uploadedImagesFiles?.length
+                                );
+                                if (
+                                  watchedImages?.length === 0 &&
+                                  uploadedImagesFiles?.length === 1
+                                ) {
+                                  setImageUploadWarning(
+                                    "atleast one image should be added"
+                                  );
+                                  return;
+                                }
+                                const newFiles = Array.from(
+                                  uploadedImagesFiles
+                                ).filter((_, i) => i !== index);
+                                setUploadedImagesFiles(newFiles);
+                                setValue("imageFiles", newFiles);
+                              }}
+                              className="absolute inset-0 items-center text-center text-white bg-opacity-50 hover:bg-gray-500 hover:bg-opacity-50 font-serif"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )
+                    )}
                 </div>
               )}
             </div>
-            <span className="text-sm font-serif text-yellow-300">No of Images should not more than 3</span>
+            <span className="text-sm font-serif text-yellow-300">
+              No of Images should not more than 3
+            </span>
             <Button
               type="submit"
               outline

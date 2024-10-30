@@ -18,7 +18,6 @@ const ResetPasswordByGmail = () => {
   const handlePasswordReset = async (formData) => {
     try {
       const { data } = await resetPasswordByGmail(userId, formData);
-      console.log(data);
       toast.success(data);
       navigate("/");
     } catch (error) {

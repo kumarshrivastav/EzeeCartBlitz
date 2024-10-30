@@ -52,16 +52,15 @@ class UserController {
       });
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        maxAge: 1000 * 60 * 60,
+        maxAge: 1000 * 60 * 60*24*7,
       });
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24,
+        maxAge: 1000 * 60 * 60 * 24*21,
       });
       const { password, ...rest } = user._doc;
-      console.log(rest);
-      rest.ttl=tokenService.verifyAccessToken(accessToken, "mysecretkey").exp
-      return res.status(201).send(rest)
+      rest.ttl = tokenService.verifyAccessToken(accessToken, "mysecretkey").exp;
+      return res.status(201).send(rest);
     } catch (error) {
       next(error);
     }
@@ -76,7 +75,6 @@ class UserController {
     }
   }
   async updateProfile(req, res, next) {
-    console.log(req.body);
     const userId = req.userId;
     const { firstName, lastName, email, newPwd, confirmPwd, currentPwdVerify } =
       req.body;
@@ -111,11 +109,7 @@ class UserController {
         { $set: { firstName, lastName, email } },
         { new: true }
       );
-      // if(imageURL){
-      //     updatedUser.avatar=imageURL.toString()
-      // }
       if (currentPwdVerify && currentPwdVerify !== "0") {
-        console.log("new password block");
         const salt = await bcryptjs.genSalt(10);
         updatedUser.password = await bcryptjs.hash(newPwd, salt);
         await updatedUser.save();
@@ -133,13 +127,11 @@ class UserController {
   }
   async currentPwdStatus(req, res, next) {
     try {
-      console.log(req.body);
       const { userId } = req.params;
       if (userId !== req.userId) {
         next(ErrorHandler(401, "You can't verify other's password"));
       }
       const user = await userModel.findById(userId);
-      console.log(user);
       const result = await bcryptjs.compare(req.body.currentPwd, user.password);
       return res.status(200).send(result);
     } catch (error) {
@@ -156,7 +148,7 @@ class UserController {
       if (password !== confirmPassword) {
         return next(ErrorHandler(400, "confirm password is not matching"));
       }
-      const user = await userModel.findOne({email})
+      const user = await userModel.findOne({ email });
       if (!user) {
         return next(ErrorHandler(404, "User Not Found"));
       }
@@ -171,12 +163,9 @@ class UserController {
     }
   }
   async passwordResetLink(req, res, next) {
-    // const userId = req.userId;
     const { email } = req.params;
-    console.log(console.log(email));
     try {
       const result = await ResetYourPassword(email);
-      console.log(result);
       return res.status(200).send(result);
     } catch (error) {
       next(error);

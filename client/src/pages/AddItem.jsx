@@ -15,7 +15,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { addProduct } from "../http/networkRequest";
 import useAuth from "../hooks/useAuth";
 const AddItem = () => {
-  useAuth()
+  useAuth();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const formMethods = useForm();
@@ -32,7 +32,7 @@ const AddItem = () => {
   const [imageUploadWarning, setImageUploadWarning] = useState("");
   const { categories } = useSelector((state) => state.products);
   const newCategories = categories.filter((category) => category !== "All");
-  const existingImages=watch('images')
+  const existingImages = watch("images");
   const handleImageChange = (e) => {
     setImageUploadStatus(false);
     setImageUploadWarning("");

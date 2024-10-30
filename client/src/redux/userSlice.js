@@ -3,7 +3,7 @@ const initialState = {
   loading: false,
   user: null,
   error: null,
-  customerInfo:{}
+  customerInfo: {},
 };
 export const userSlice = createSlice({
   name: "user",
@@ -17,11 +17,11 @@ export const userSlice = createSlice({
       state.user = action.payload;
       state.error = null;
     },
-    setCustomerInfo:(state,action)=>{
-      state.customerInfo=action.payload
+    setCustomerInfo: (state, action) => {
+      state.customerInfo = action.payload;
     },
-    removeCustomerInfo:(state,action)=>{
-      state.customerInfo=null
+    removeCustomerInfo: (state, action) => {
+      state.customerInfo = null;
     },
     userLoginFailure: (state, action) => {
       state.loading = false;
@@ -41,20 +41,18 @@ export const userSlice = createSlice({
       state.error = action.payload;
     },
     userUpdateStart: (state) => {
-      state.loading = true
-      state.error = null
+      state.loading = true;
+      state.error = null;
     },
     userUpdateSuccess: (state, action) => {
-      console.log(action.payload)
-      state.loading = false
-      state.user = action.payload
-      state.error = null
+      state.loading = false;
+      state.user = action.payload;
+      state.error = null;
     },
     userUpdateFailure: (state, action) => {
-      state.loading = false
-      state.error = action.payload
-
-    }
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -65,7 +63,11 @@ export const {
   userLogoutStart,
   userLogoutSuccess,
   userLogoutFailure,
-  userUpdateFailure, userUpdateStart, userUpdateSuccess,setCustomerInfo,removeCustomerInfo
+  userUpdateFailure,
+  userUpdateStart,
+  userUpdateSuccess,
+  setCustomerInfo,
+  removeCustomerInfo,
 } = userSlice.actions;
 
-export default userSlice.reducer
+export default userSlice.reducer;

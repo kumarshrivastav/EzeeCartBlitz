@@ -27,13 +27,26 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/single/:id" element={<Single />} />
-        <Route path="/resetpasswordbygmail/:userId" element={<ResetPasswordByGmail/>}/>
+        <Route
+          path="/resetpasswordbygmail/:userId"
+          element={<ResetPasswordByGmail />}
+        />
         <Route element={<PrivateRoute />}>
           <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/additem/:userId" element={<AddItem />} />
           <Route path="/updateitem/:userId/:productId" element={<Update />} />
-          <Route path="/complete" element={<Elements stripe={stripePromise}><PaymentCompletePage/></Elements>}/>
-          <Route path="/checkout-payment-intent" element={<CheckoutPaymentIntent/>}/>
+          <Route
+            path="/complete"
+            element={
+              <Elements stripe={stripePromise}>
+                <PaymentCompletePage />
+              </Elements>
+            }
+          />
+          <Route
+            path="/checkout-payment-intent"
+            element={<CheckoutPaymentIntent />}
+          />
         </Route>
       </Routes>
     </>

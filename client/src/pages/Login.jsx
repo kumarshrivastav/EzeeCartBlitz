@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Label, TextInput, Button, Spinner, Modal } from "flowbite-react";
 import { Link, useNavigate,useLocation } from "react-router-dom";
 import {useForm} from "react-hook-form"
-import { passwordResetLink, userLogin } from "../http/networkRequest";
+import { userLogin } from "../http/networkRequest";
 import toast from "react-hot-toast";
 import {useDispatch, useSelector} from "react-redux"
 import {userLoginFailure,userLoginStart,userLoginSuccess} from "../redux/userSlice"
@@ -10,12 +10,10 @@ import Popup from "../components/Popup/Popup";
 const Login = () => {
   const dispatch=useDispatch()
   const location=useLocation()
-  const {user}=useSelector(state=>state.users)
-  const {register,watch,handleSubmit,formState:{errors}}=useForm()
+  const {register,handleSubmit,formState:{errors}}=useForm()
   const [loading,setLoading]=useState(false)
   const [openModel,setOpenModel]=useState(false)
   const navigate=useNavigate()
-  console.log(openModel)
   const onSubmit=async(data)=>{
   const from=location.state?.from || "/"
     try {
@@ -26,7 +24,6 @@ const Login = () => {
       toast.success("User LoggedIn Successfully")
       setLoading(false)
       navigate(from,{replace:true})
-      console.log(res)
     } catch (error) {
       toast.error(error?.response?.data?.message)
       dispatch(userLoginFailure(error))

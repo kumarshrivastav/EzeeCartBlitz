@@ -10,14 +10,11 @@ class ProductController {
       if (userId !== req.userId && !req.isAdmin) {
         return next(ErrorHandler(401, "Only admin can add product"));
       }
-      console.log(req.body);
-      console.log(req.files);
       const { name, description, category, rating, price } = req.body;
       if (!name || !description || !category || !rating || !price) {
         return next(ErrorHandler(400, "please provide all the filed"));
       }
       const existProduct = await productModel.find({ name });
-      console.log(existProduct);
       if (existProduct?.length !== 0) {
         return next(
           ErrorHandler(400, "Product with this name is already exist")
@@ -65,10 +62,8 @@ class ProductController {
   }
   async similarProducts(req, res, next) {
     try {
-      // console.log(req.query)
       const { category } = req.query;
       const productListBasedCategory = await productModel.find({ category });
-      // console.log(productListBasedCategory)
       return res.status(200).send(productListBasedCategory);
     } catch (error) {
       next(error);
@@ -76,10 +71,7 @@ class ProductController {
   }
   async updateProduct(req, res, next) {
     try {
-      // console.log(req.body?.images)
-      // console.log(req.files)
       const { images } = req.body;
-      // console.log()
       const { userId, productId } = req.params;
       if (req.userId !== userId) {
         return next(ErrorHandler(400, "Only admin can update the product"));
@@ -108,7 +100,6 @@ class ProductController {
         }
       }
       const savedUpdatedProduct = await updatedProduct.save();
-      console.log(savedUpdatedProduct);
       return res
         .status(201)
         .send({ msg: "Product Updated Successfully", savedUpdatedProduct });
@@ -158,7 +149,6 @@ class ProductController {
         success_url: "http://localhost:5173/success",
         cancel_url: "http://localhost:5173/failure",
         customer_email: customerInfo?.customerEmail,
-        // billing_address_collection:'required',
         shipping_options: [
           {
             shipping_rate: shippingRate.id,
@@ -179,7 +169,6 @@ class ProductController {
           allowed_countries: ["IN"],
         },
       });
-      // console.log(session)
       return res.status(201).send({ id: session?.id });
     } catch (error) {
       next(error);
@@ -199,7 +188,6 @@ class ProductController {
         currency: "inr",
         payment_method_types: ["card"],
         shipping: {
-          // {{ edit_3 }}
           name: customerInfo?.customerName || "Default Name",
           address: {
             line1: customerInfo?.addressLine1 || "Default Address Line 1",
@@ -241,7 +229,6 @@ class ProductController {
             { category: { $regex: req.query.searchTerm, $options: "i" } },
           ],
         }),
-        
       };
       const products = await productModel.find(searchQuery);
       return res.status(200).send(products);
@@ -249,18 +236,17 @@ class ProductController {
       next(error);
     }
   }
-  async categorySelector(req,res,next){
+  async categorySelector(req, res, next) {
     try {
-      const searchQuery=req.query.categorySelector === "All"
-        ? {}
-        : {
-            category: { $regex: req.query.categorySelector, $options: "i" },
-          }
-          const products=await productModel.find(searchQuery)
-          return res.status(200).send(products)
-    } catch (error) {
-      
-    }
+      const searchQuery =
+        req.query.categorySelector === "All"
+          ? {}
+          : {
+              category: { $regex: req.query.categorySelector, $options: "i" },
+            };
+      const products = await productModel.find(searchQuery);
+      return res.status(200).send(products);
+    } catch (error) {}
   }
 }
 

@@ -1,21 +1,29 @@
 import react, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, FormProvider } from "react-hook-form";
-import { Label, TextInput, Button, Badge } from "flowbite-react";
-import { currentpwdstatus, passwordResetLink, updateprofile } from "../http/networkRequest";
+import { Label, TextInput, Button } from "flowbite-react";
+import {
+  currentpwdstatus,
+  passwordResetLink,
+  updateprofile,
+} from "../http/networkRequest";
 import { useParams } from "react-router-dom";
-import { userUpdateFailure, userUpdateStart, userUpdateSuccess } from "../redux/userSlice";
+import {
+  userUpdateFailure,
+  userUpdateStart,
+  userUpdateSuccess,
+} from "../redux/userSlice";
 import toast from "react-hot-toast";
 import useAuth from "../hooks/useAuth";
 const Profile = () => {
-  useAuth()
-  const { userId } = useParams()
-  const [currentPwdStatus, setCurrentPwdStatus] = useState(false)
-  const [currentPwd, setCurrentPwd] = useState("")
-  const [loading, setLoading] = useState(false)
+  useAuth();
+  const { userId } = useParams();
+  const [currentPwdStatus, setCurrentPwdStatus] = useState(false);
+  const [currentPwd, setCurrentPwd] = useState("");
+  const [loading, setLoading] = useState(false);
   const formMethods = useForm();
-  const [currentPwdVerify, setCurrentPwdVerify] = useState(false)
-  const dispatch = useDispatch()
+  const [currentPwdVerify, setCurrentPwdVerify] = useState(false);
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -28,57 +36,56 @@ const Profile = () => {
   const { user } = useSelector((state) => state.users);
   const [file, setFile] = useState(null);
   const [imageURI, setImageURI] = useState(null);
-  const [passwordVerified, setPasswordVerified] = useState(false)
+  const [passwordVerified, setPasswordVerified] = useState(false);
   const fileRef = useRef(null);
   const handleChangeUpdateFormData = (e) => {
     setUpdateFormData({ ...updateFormData, [e.target.id]: e.target.value });
   };
   const handleCurrentPwd = async () => {
     try {
-      setLoading(true)
-      const { data } = await currentpwdstatus(userId, { currentPwd })
-      setCurrentPwd("")
+      setLoading(true);
+      const { data } = await currentpwdstatus(userId, { currentPwd });
+      setCurrentPwd("");
       if (data) {
-        setCurrentPwdStatus(true)
-        setPasswordVerified(true)
-        setCurrentPwdVerify(true)
+        setCurrentPwdStatus(true);
+        setPasswordVerified(true);
+        setCurrentPwdVerify(true);
       } else {
-        setCurrentPwdStatus(false)
-        setCurrentPwdVerify(false)
+        setCurrentPwdStatus(false);
+        setCurrentPwdVerify(false);
       }
-      setLoading(false)
+      setLoading(false);
     } catch (error) {
-      setLoading(false)
-      console.log(error?.response?.data?.message)
+      setLoading(false);
+      console.log(error?.response?.data?.message);
     }
-  }
-  const sendPasswordResetLink=async()=>{
-    alert('we have sent password reset link to your gmail')
-    setLoading(true)
+  };
+  const sendPasswordResetLink = async () => {
+    alert("we have sent password reset link to your gmail");
+    setLoading(true);
     try {
-      const {data}=await passwordResetLink(user?.email)
-      console.log(data)
-      setLoading(false)
+      const { data } = await passwordResetLink(user?.email);
+      setLoading(false);
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
   const handleImageChange = (e) => {
     setFile(e.target.files[0]);
-    const file = e.target.files[0]
+    const file = e.target.files[0];
     if (file) {
-      setFile(file)
-      let reader = new FileReader()
+      setFile(file);
+      let reader = new FileReader();
       reader.onloadend = function (e) {
-        setImageURI(e.target.result)
-      }
-      reader.readAsDataURL(file)
+        setImageURI(e.target.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
   // console.log(String(currentPwd).length)
   const onSubmit = async (formData) => {
-    console.log(formData)
-    dispatch(userUpdateStart())
+    console.log(formData);
+    dispatch(userUpdateStart());
     try {
       const JsonFormData = new FormData();
       if (formData?.avatar) {
@@ -98,20 +105,20 @@ const Profile = () => {
         JsonFormData.append("newPwd", formData.newPwd);
       }
       if (formData?.confirmPwd) {
-        JsonFormData.append("confirmPwd", formData.confirmPwd)
+        JsonFormData.append("confirmPwd", formData.confirmPwd);
       }
-      JsonFormData.append('currentPwdVerify', currentPwdVerify ? 1 : 0)
-      const { data } = await updateprofile(userId.toString(), JsonFormData)
-      dispatch(userUpdateSuccess(data.updatedUser))
-      toast.success(data?.msg)
-      setCurrentPwdStatus(false)
-        setPasswordVerified(false)
-        setCurrentPwdVerify(false)
-        formMethods.reset()
+      JsonFormData.append("currentPwdVerify", currentPwdVerify ? 1 : 0);
+      const { data } = await updateprofile(userId.toString(), JsonFormData);
+      dispatch(userUpdateSuccess(data.updatedUser));
+      toast.success(data?.msg);
+      setCurrentPwdStatus(false);
+      setPasswordVerified(false);
+      setCurrentPwdVerify(false);
+      formMethods.reset();
     } catch (error) {
-      console.log(error?.response?.data?.message)
-      toast.error(error?.response?.data?.message)
-      dispatch(userUpdateFailure(error))
+      console.log(error?.response?.data?.message);
+      toast.error(error?.response?.data?.message);
+      dispatch(userUpdateFailure(error));
     }
   };
   return (
@@ -148,7 +155,9 @@ const Profile = () => {
                 id="avatar"
                 accept="image/*"
                 ref={fileRef}
-                {...register("avatar", { onChange: (e) => handleImageChange(e) })}
+                {...register("avatar", {
+                  onChange: (e) => handleImageChange(e),
+                })}
                 hidden
               />
             </div>
@@ -229,8 +238,9 @@ const Profile = () => {
               </div>
               <hr className="mt-2" />
               <div className="flex flex-col gap-2">
-
-                <h1 className="text-white font-serif font-semibold mx-auto">Change Your Password</h1>
+                <h1 className="text-white font-serif font-semibold mx-auto">
+                  Change Your Password
+                </h1>
                 <div className="flex flex-col">
                   <div>
                     <Label
@@ -257,29 +267,51 @@ const Profile = () => {
                     onChange={(e) => setCurrentPwd(e.target.value)}
                   />
                   <div className="flex flex-col justify-between">
-                    <span className="text-sm font-serif text-red-500 mt-1">verify your current password if want to change it.</span>
-                    <span className={`font-serif font-semibold text-sm ${currentPwdStatus ? "text-green-500" : "text-red-600"}`}>
-                      {
-                        currentPwdStatus ? "Corrent Password" : "Incorrect Password"
-                      }
+                    <span className="text-sm font-serif text-red-500 mt-1">
+                      verify your current password if want to change it.
+                    </span>
+                    <span
+                      className={`font-serif font-semibold text-sm ${
+                        currentPwdStatus ? "text-green-500" : "text-red-600"
+                      }`}
+                    >
+                      {currentPwdStatus
+                        ? "Corrent Password"
+                        : "Incorrect Password"}
                     </span>
                   </div>
                   <div className="flex flex-col mt-2">
-
                     <div className="flex flex-row justify-between">
-                      <Button color={'warning'} disabled={String(currentPwd).length < 8} onClick={handleCurrentPwd} className={` hover:bg-white hover:text-black border text-sm font-serif mr-1`}>
-                        {
-                          loading ? "Please wait a moment" : "Verify Your Password"
-                        }
+                      <Button
+                        color={"warning"}
+                        disabled={String(currentPwd).length < 8}
+                        onClick={handleCurrentPwd}
+                        className={` hover:bg-white hover:text-black border text-sm font-serif mr-1`}
+                      >
+                        {loading
+                          ? "Please wait a moment"
+                          : "Verify Your Password"}
                       </Button>
-                      <Button gradientDuoTone={'purpleToPink'} outline className="font-serif" onClick={sendPasswordResetLink} disabled={loading}>
+                      <Button
+                        gradientDuoTone={"purpleToPink"}
+                        outline
+                        className="font-serif"
+                        onClick={sendPasswordResetLink}
+                        disabled={loading}
+                      >
                         Change By Gmail
                       </Button>
                     </div>
-                    <div className={`${currentPwdStatus ? "text-green-600" : "text-red-600"} mt-2 text-center border-2 p-1 ${currentPwdStatus ? "bg-pink-400" : "bg-cyan-400"} font-serif font-semibold`}>
-                      {
-                        currentPwdStatus ? "Verified Success" : "Verified Failure"
-                      }
+                    <div
+                      className={`${
+                        currentPwdStatus ? "text-green-600" : "text-red-600"
+                      } mt-2 text-center border-2 p-1 ${
+                        currentPwdStatus ? "bg-pink-400" : "bg-cyan-400"
+                      } font-serif font-semibold`}
+                    >
+                      {currentPwdStatus
+                        ? "Verified Success"
+                        : "Verified Failure"}
                     </div>
                   </div>
                 </div>
@@ -296,7 +328,7 @@ const Profile = () => {
                     sizing="sm"
                     id="newPwd"
                     disabled={!currentPwdStatus}
-                    {...currentPwdStatus && {
+                    {...(currentPwdStatus && {
                       ...register("newPwd", {
                         required: "New Password is Required",
                         onChange: (e) => handleChangeUpdateFormData(e),
@@ -304,8 +336,8 @@ const Profile = () => {
                           value: 8,
                           message: "password must be >=8 characters",
                         },
-                      })
-                    }}
+                      }),
+                    })}
                     placeholder="enter your new password"
                   />
                   {errors.newPwd && (
@@ -327,21 +359,19 @@ const Profile = () => {
                     sizing="sm"
                     id="confirmPwd"
                     disabled={!currentPwdStatus}
-                    {...currentPwdStatus && {
+                    {...(currentPwdStatus && {
                       ...register("confirmPwd", {
                         // required: "This field is required",
                         onChange: (e) => handleChangeUpdateFormData(e),
                         validate: (val) => {
                           if (!val) {
-                            return "This field is required"
+                            return "This field is required";
+                          } else if (watch("newPwd") !== val) {
+                            return "Password dont't matching";
                           }
-                          else if (watch('newPwd') !== val) {
-                            return "Password dont't matching"
-                          }
-                        }
-
-                      })
-                    }}
+                        },
+                      }),
+                    })}
                     placeholder="re-enter your new password"
                   />
                   {errors.confirmPwd && (

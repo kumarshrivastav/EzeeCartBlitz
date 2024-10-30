@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { allProductsFromDB, setDefaultProducts } from "../redux/productSlice";
 import { getProducts } from "../http/networkRequest";
 import toast from "react-hot-toast";
-// import {v4 as uuid} from "uuid"
 const Home = () => {
   const dispatch=useDispatch()
   const [allProducts,setAllProducts]=useState([])

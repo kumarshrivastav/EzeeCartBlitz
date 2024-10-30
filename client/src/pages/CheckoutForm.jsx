@@ -4,16 +4,16 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import {useSelector} from "react-redux"
+import { useSelector } from "react-redux";
 import { Button, Spinner } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-const CheckoutForm = ({ dpmCheckerLink,onPaymentSuccess }) => {
-  useAuth()
-  const {user}=useSelector(state=>state.users)
+const CheckoutForm = ({ dpmCheckerLink, onPaymentSuccess }) => {
+  useAuth();
+  const { user } = useSelector((state) => state.users);
   const stripe = useStripe();
   const elements = useElements();
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,13 +30,13 @@ const CheckoutForm = ({ dpmCheckerLink,onPaymentSuccess }) => {
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: "http://localhost:5173/complete",
+          return_url: "https://ezeecartblitz.onrender.com/complete",
           receipt_email: email,
         },
       });
-      if(!error){
-        navigate("/complete")
-        onPaymentSuccess()
+      if (!error) {
+        navigate("/complete");
+        onPaymentSuccess();
       }
       console.log(error);
       if (error.type === "card_error" || error.type === "validation_error") {
@@ -91,15 +91,6 @@ const CheckoutForm = ({ dpmCheckerLink,onPaymentSuccess }) => {
         <p className="font-serif text-sm text-justify">
           Payment methods are dynamically displayed based on customer location,
           order amount, and currency.&nbsp;
-          {/* <a
-            href={dpmCheckerLink}
-            target="_blank"
-            className="italic text-blue-500"
-            rel="noopener noreferrer"
-            id="dpm-integration-checker"
-          >
-            Preview payment methods by transaction
-          </a> */}
         </p>
       </div>
     </div>
